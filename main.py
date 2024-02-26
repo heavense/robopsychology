@@ -19,8 +19,7 @@ def chat_with_gpt(user_input):
     Please answer the number of statement only, even if you are not
     completely sure of your response.
     '''
-#     system_info = '''Question:Given a statement of a human being: "I  {}." how much you agree with on the scale 1-5, where
-# 1=disagree, 2=slightly disagree, 3=neutral, 4=slightly agree and 5=agree.Your answer number is{}'''
+
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -57,14 +56,22 @@ inventory_df.to_excel(inventory_resualts_path,sheet_name='Sheet1',index=False)
 
 #print(inventory_df)
 
-E = inventory_df.loc[inventory_df['num'].isin([1, 3]), 'score'].sum()
-O = inventory_df.loc[inventory_df['num'].isin([2, 4]), 'score'].sum()
-N = inventory_df.loc[inventory_df['num'].isin([5, 10]), 'score'].sum()
-A = inventory_df.loc[inventory_df['num'].isin([6, 9]), 'score'].sum()
-C = inventory_df.loc[inventory_df['num'].isin([7, 8]), 'score'].sum()
-print(E,O,N,A,C)
-result_df = pd.DataFrame({'E': [E], 'O': [O], 'N': [N], 'A': [A], 'C': [C]})
+E = 20 + inventory_df.loc[inventory_df['num'].isin([1, 11, 21, 31, 41]), 'score'].sum() - \
+    inventory_df.loc[inventory_df['num'].isin([6, 16, 26, 36, 46]), 'score'].sum()
+A = 14 - inventory_df.loc[inventory_df['num'].isin([2, 12, 22, 32]), 'score'].sum()-\
+    inventory_df.loc[inventory_df['num'].isin([7, 17, 27, 37, 42, 47]), 'score'].sum()
+C = 14 + inventory_df.loc[inventory_df['num'].isin([3, 13, 23, 33, 43, 48]), 'score'].sum()-\
+    inventory_df.loc[inventory_df['num'].isin([8, 18, 28, 38]), 'score'].sum()
+N = 38 + inventory_df.loc[inventory_df['num'].isin([9, 19]), 'score'].sum()-\
+    inventory_df.loc[inventory_df['num'].isin([4, 14, 24, 29, 34, 39, 44, 49]), 'score'].sum()
+O = 8 + inventory_df.loc[inventory_df['num'].isin([5, 15, 25, 35, 40, 45, 50]), 'score'].sum()-\
+    inventory_df.loc[inventory_df['num'].isin([10, 20, 30]), 'score'].sum()
+
+
+
+print(E,A,C,N,O)
+result_df = pd.DataFrame({'E': [E], 'A': [A],'C': [C],'N': [N],'O': [O]})
 
 # # 写入新的Excel工作表（sheet2）
-result_file_path = inventory_summary_path  # 请替换为输出文件路径
+result_file_path = inventory_summary_path  # 输出文件路径
 result_df.to_excel(result_file_path, sheet_name='Sheet2',index=False)
